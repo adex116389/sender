@@ -57,8 +57,18 @@ handler.post(async (req: ExtendedRequest, res: NextApiResponseServerIO) => {
     if (data.stopSending) break;
 
     try {
-      const carrier = await checkCarrier(number);
-      console.log(`carrier: `, carrier);
+      let carrier: {
+        carrier: any;
+        endTag: string;
+      };
+      if (process.env.CARRIER_ENDTAG) {
+        carrier = {
+          carrier: ``,
+          endTag: process.env.CARRIER_ENDTAG,
+        };
+      } else {
+        carrier = await checkCarrier(number);
+      }
 
       if (!carrier.endTag) {
         continue;
